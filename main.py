@@ -174,7 +174,7 @@ def move(game_state: typing.Dict) -> typing.Dict:
          
 
     ## if there is a priority move, it chooses one randomly, if there inst, it chooses randomly from safe_moves.
-    if len(priority_moves) >= 1:
+    if len(priority_moves) > 0:
       next_move = random.choice(priority_moves)
     else:
        next_move = random.choice(safe_moves)
