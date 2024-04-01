@@ -118,55 +118,43 @@ def move(game_state: typing.Dict) -> typing.Dict:
        
 
 
-   
-    safe_moves = []
      ## loops through each key in is_move_safe.
      ## if the key returns True, appends the key to safe_move list.
+    safe_moves = {}
     for move, isSafe in is_move_safe.items():
         if isSafe:
-            safe_moves.append(move)
+         if move == "up":
+            safe_moves ["up"] = {"x": my_head["x"], "y": my_head["y"] + 1}       
+         if move == "down":
+           safe_moves ["down"] = {"x": my_head["x"], "y": my_head["y"] - 1}
+         if move == "right":
+           safe_moves ["right"] = {"x": my_head["x"] + 1, "y": my_head["y"]}
+         if move == "left":
+           safe_moves ["left"] = {"x": my_head["x"] - 1, "y": my_head["y"]}             
 
     ## if there are no safe moves, snake moves down.
     if len(safe_moves) == 0:
         print(f"MOVE {game_state['turn']}: No safe moves detected! Moving down")
         return {"move": "down"}
-
-
-     
     
     food = game_state['board']['food']
 
-    coordinates_safe_moves = []
     priority_moves = []
     next_move = None
 
-   
-
-
-    ## Check if a move is safe, if it is it stores that move coordinates in coordinates_safe_moves list.
-    if is_move_safe["up"]:
-      coordinates_safe_moves.append({"x": my_head["x"], "y": my_head["y"] + 1})
-    if is_move_safe["down"]:
-      coordinates_safe_moves.append({"x": my_head["x"], "y": my_head["y"] - 1})
-    if is_move_safe["right"]:
-      coordinates_safe_moves.append({"x": my_head["x"] + 1, "y": my_head["y"]})
-    if is_move_safe["left"]:
-      coordinates_safe_moves.append({"x": my_head["x"] - 1, "y": my_head["y"]})
-
-
     ## loops through food coordinates and safe moves coordinates, then it compares if both coordinates match.
     for food_cor in food:
-      for safe_cor in coordinates_safe_moves:
+      for move, safe_cor in safe_moves.items():
        if food_cor["x"] == safe_cor["x"] and food_cor["y"] == safe_cor["y"]:
          
         ## If coordinates match, appends the corresponding move to priority_move list
-         if food_cor["x"] + 1 == my_head["x"]:
+         if my_head["x"] == food_cor["x"] + 1:
             priority_moves.append("left")
-         elif food_cor["x"] - 1 == my_head["x"]:   
+         elif my_head["x"] == food_cor["x"] - 1:   
             priority_moves.append("right")
-         elif food_cor["y"] + 1 == my_head["y"]:
+         elif my_head["y"] == food_cor["y"] + 1:
             priority_moves.append("down")
-         elif food_cor["y"] - 1 == my_head["y"]:
+         elif my_head["y"] == food_cor["y"] - 1:
             priority_moves.append("up")
     
         
@@ -177,7 +165,7 @@ def move(game_state: typing.Dict) -> typing.Dict:
     if len(priority_moves) > 0:
       next_move = random.choice(priority_moves)
     else:
-       next_move = random.choice(safe_moves)
+       next_move = random.choice(list(safe_moves))
       
 
 
