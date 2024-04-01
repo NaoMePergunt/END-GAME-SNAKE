@@ -56,18 +56,6 @@ def move(game_state: typing.Dict) -> typing.Dict:
     my_head = game_state["you"]["body"][0]  # Coordinates of snake head
     my_neck = game_state["you"]["body"][1]  # Coordinates of snake neck
     
-    ## prevents snake from going backwards, colliding with itself.
-    if my_neck["x"] < my_head["x"]:  
-        is_move_safe["left"] = False
-
-    elif my_neck["x"] > my_head["x"]:  
-       is_move_safe["right"] = False
-
-    elif my_neck["y"] < my_head["y"]:  
-        is_move_safe["down"] = False
-
-    elif my_neck["y"] > my_head["y"]:  
-        is_move_safe["up"] = False
 
     board_width = game_state['board']['width']
     board_height = game_state['board']['height']
@@ -92,34 +80,24 @@ def move(game_state: typing.Dict) -> typing.Dict:
     
     
     my_body = game_state['you']['body']
-    no_head_neck = my_body[2:]
   
-    ## loops through body_parts and check if there is a collision between its own body.
-    ## if there is a collision it updates the is_move_safe dictionary accordingly.
-    for body_part in no_head_neck:
-     check_collision(my_head, no_head_neck, is_move_safe)
-
-
-  
-
-
-
+ 
     #Prevent your Battlesnake from colliding with other Battlesnakes
-    opponents = game_state['board']['snakes']
-    all_enemies_bodys = [enemy_body["body"] for enemy_body in opponents]
+    players = game_state['board']['snakes']
+    all_players_bodys = [player_body["body"] for player_body in players]
     
 
-    ## loops through each body in all enemies bodys.
+    ## loops through each body in all players bodys.
     ## the function then loops through each body part and check if there is collision between my snake.
     ## if there is a collision it updates the is_move_safe dictionary accordingly.
-    for body in all_enemies_bodys:
+    for body in all_players_bodys:
       check_collision(my_head, body, is_move_safe)
     
        
 
 
-     ## loops through each key in is_move_safe.
-     ## if the key returns True, appends the key to safe_move list.
+     ## loops through each key/move in is_move_safe.
+     ## if the key returns True, it assigns the move and its coordinates to safe_move dictionary.
     safe_moves = {}
     for move, isSafe in is_move_safe.items():
         if isSafe:
@@ -173,8 +151,6 @@ def move(game_state: typing.Dict) -> typing.Dict:
     print(f"MOVE {game_state['turn']}: {next_move}")
     return {"move": next_move}
     
-
-
 
 
 
