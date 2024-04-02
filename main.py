@@ -205,7 +205,7 @@ def check_collision(my_head, body, is_move_safe):
             is_move_safe["down"] = False  ## if snake goes down and enemy can go left
         
         
-def get_adjcent_cells_cor(adjacent_cells_cor, my_head):
+def get_adjcent_cells_cor(my_head):
   adjacent_cells_cor = {}
   adjacent_cells_cor ["up"] = get_up_cor(my_head)
   adjacent_cells_cor ["down"] = get_down_cor(my_head)
