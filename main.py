@@ -141,7 +141,7 @@ def move(game_state: typing.Dict) -> typing.Dict:
 
     ## if there is a priority move, it chooses one randomly, if there inst, it chooses randomly from safe_moves.
     if len(priority_moves) > 0:
-      next_move = random.choice(priority_moves)
+       next_move = random.choice(priority_moves)
     else:
        next_move = random.choice(list(safe_moves))
       
@@ -166,9 +166,47 @@ def check_collision(my_head, body, is_move_safe):
         if my_head["y"] - 1 == body_part["y"] and body_part["x"] == my_head["x"]:
             is_move_safe["down"] = False 
 
-      
+        
+    for body_part in body[:1]:
+        print(body_part)
+        if my_head["x"] + 1 == body_part["x"] - 1 and body_part["y"] == my_head["y"]:
+            is_move_safe["right"] = False ## if snake goes right and enemie can come left
+        if my_head["x"] + 1 == body_part["x"] and body_part["y"] - 1 == my_head["y"]:
+            is_move_safe["right"] = False ## if snake goes right and enemy can come down
+        if my_head["x"] + 1 == body_part["x"] and body_part["y"] + 1 == my_head["y"]:
+            is_move_safe["right"] = False ## if snake goes right and enemy can come up
+        
+        
+        if my_head["x"] - 1 == body_part["x"] + 1 and body_part["y"] == my_head["y"]:
+            is_move_safe["left"] = False ## if snake goes left and enemy can come right
+        if my_head["x"] - 1 == body_part["x"] and body_part["y"] - 1 == my_head["y"]:
+            is_move_safe["left"] = False ## if snake goes left and enemy can come down
+        if my_head["x"] - 1 == body_part["x"] and body_part["y"] + 1 == my_head["y"]:
+            is_move_safe["left"] = False ## if snake goes left and enemy can come up
+        
 
-    
+
+
+        if my_head["y"] + 1 == body_part["y"] - 1 and body_part["x"] == my_head["x"]:
+            is_move_safe["up"] = False ## if snake goes up and enemy can come down
+        if my_head["y"] + 1 == body_part["y"] and body_part["x"] + 1 == my_head["x"]:
+            is_move_safe["up"] = False ## if snake goes up and enemy can go right
+        if my_head["y"] + 1 == body_part["y"] and body_part["x"] - 1 == my_head["x"]:
+            is_move_safe["up"] = False ## if snake goes up and enemy can go left
+        
+        
+
+
+        if my_head["y"] - 1 == body_part["y"] + 1 and body_part["x"] == my_head["x"]:     
+            is_move_safe["down"] = False ## if snake goes down and enemy can go up
+        if my_head["y"] - 1 == body_part["y"] and body_part["x"] + 1 == my_head["x"]:
+            is_move_safe["down"] = False ## if snake goes down and enemy can go right
+        if my_head["y"] - 1 == body_part["y"] and body_part["x"] - 1 == my_head["x"]:     
+            is_move_safe["down"] = False  ## if snake goes down and enemy can go left
+        
+           
+        
+
 
  
   
