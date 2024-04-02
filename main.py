@@ -211,7 +211,8 @@ def get_adjcent_cells_cor(my_head):
   adjacent_cells_cor ["down"] = get_down_cor(my_head)
   adjacent_cells_cor ["right"] = get_right_cor(my_head)
   adjacent_cells_cor ["left"] = get_left_cor(my_head)
-
+  return adjacent_cells_cor
+  
 
 
 def get_up_cor(my_head):
