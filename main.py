@@ -102,13 +102,13 @@ def move(game_state: typing.Dict) -> typing.Dict:
     for move, isSafe in is_move_safe.items():
         if isSafe:
          if move == "up":
-            safe_moves ["up"] = {"x": my_head["x"], "y": my_head["y"] + 1}       
+            safe_moves ["up"] = get_up_cor(my_head)
          if move == "down":
-           safe_moves ["down"] = {"x": my_head["x"], "y": my_head["y"] - 1}
+           safe_moves ["down"] = get_down_cor(my_head)
          if move == "right":
-           safe_moves ["right"] = {"x": my_head["x"] + 1, "y": my_head["y"]}
+           safe_moves ["right"] = get_right_cor(my_head)
          if move == "left":
-           safe_moves ["left"] = {"x": my_head["x"] - 1, "y": my_head["y"]}             
+           safe_moves ["left"] = get_left_cor(my_head)           
 
     ## if there are no safe moves, snake moves down.
     if len(safe_moves) == 0:
@@ -204,14 +204,30 @@ def check_collision(my_head, body, is_move_safe):
         if my_head["y"] - 1 == body_part["y"] and body_part["x"] - 1 == my_head["x"]:     
             is_move_safe["down"] = False  ## if snake goes down and enemy can go left
         
-           
         
+def get_adjcent_cells_cor(adjacent_cells_cor, my_head):
+  adjacent_cells_cor = {}
+  adjacent_cells_cor ["up"] = get_up_cor(my_head)
+  adjacent_cells_cor ["down"] = get_down_cor(my_head)
+  adjacent_cells_cor ["right"] = get_right_cor(my_head)
+  adjacent_cells_cor ["left"] = get_left_cor(my_head)
 
 
- 
+
+def get_up_cor(my_head):
+    return {"x": my_head["x"], "y": my_head["y"] + 1}
+
+def get_down_cor(my_head):
+   return {"x": my_head["x"], "y": my_head["y"] - 1}
+
+def get_right_cor(my_head):
+   return {"x": my_head["x"] + 1, "y": my_head["y"]}
+
+def get_left_cor(my_head):
+   return {"x": my_head["x"] - 1, "y": my_head["y"]}
+
+
   
-
-
 
 # Start server when `python main.py` is run
 if __name__ == "__main__":
