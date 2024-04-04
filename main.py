@@ -54,7 +54,6 @@ def move(game_state: typing.Dict) -> typing.Dict:
     }
 
     my_head = game_state["you"]["body"][0]  # Coordinates of snake head
-    my_neck = game_state["you"]["body"][1]  # Coordinates of snake neck
     
 
     board_width = game_state['board']['width']
@@ -77,9 +76,6 @@ def move(game_state: typing.Dict) -> typing.Dict:
         is_move_safe["left"] = False
     if my_head["y"] == min_y:
         is_move_safe["down"] = False
-    
-    
-    my_body = game_state['you']['body']
   
  
     #Prevent your Battlesnake from colliding with other Battlesnakes
@@ -91,7 +87,7 @@ def move(game_state: typing.Dict) -> typing.Dict:
     ## the function then loops through each body part and check if there is collision between my snake.
     ## if there is a collision it updates the is_move_safe dictionary accordingly.
     for body in all_players_bodys:
-      check_collision(my_head, body, is_move_safe)
+      check_collision(game_state, body, is_move_safe)
     
        
 
@@ -150,7 +146,9 @@ def move(game_state: typing.Dict) -> typing.Dict:
 
 
 ## a function that loops through each body_part. it checks if the body_parts collides with the head.
-def check_collision(my_head, body, is_move_safe):
+def check_collision(game_state, body, is_move_safe):
+    my_body = game_state['you']['body']
+    my_head = game_state["you"]["body"][0]
     enemy_head = body[0]
     adjacent_cells = get_adjcent_cells_cor(my_head)
     adjacent_cells_further = {
@@ -170,9 +168,11 @@ def check_collision(my_head, body, is_move_safe):
       for move, cor in moves.items():
           if enemy_head["x"] == my_head["x"] and enemy_head["y"] == my_head["y"]:
             continue
-          if cor["x"] == enemy_head["x"] and cor["y"] == enemy_head["y"]:
-            is_move_safe[move] = False
-        
+          if cor["x"] == enemy_head["x"] and cor["y"] == enemy_head["y"] and len(my_body) <= len(body):
+             is_move_safe[move] = False
+
+       
+          
         
      
 
