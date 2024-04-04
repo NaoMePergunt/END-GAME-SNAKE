@@ -98,17 +98,12 @@ def move(game_state: typing.Dict) -> typing.Dict:
 
      ## loops through each key/move in is_move_safe.
      ## if the key returns True, it assigns the move and its coordinates to safe_move dictionary.
+    adjacent_cells = get_adjcent_cells_cor(my_head)
     safe_moves = {}
     for move, isSafe in is_move_safe.items():
-        if isSafe:
-         if move == "up":
-            safe_moves ["up"] = get_up_cor(my_head)
-         if move == "down":
-           safe_moves ["down"] = get_down_cor(my_head)
-         if move == "right":
-           safe_moves ["right"] = get_right_cor(my_head)
-         if move == "left":
-           safe_moves ["left"] = get_left_cor(my_head)           
+        if isSafe and move in adjacent_cells:
+          safe_moves[move] = adjacent_cells[move]
+
 
     ## if there are no safe moves, snake moves down.
     if len(safe_moves) == 0:
@@ -156,61 +151,46 @@ def move(game_state: typing.Dict) -> typing.Dict:
 
 ## a function that loops through each body_part. it checks if the body_parts collides with the head.
 def check_collision(my_head, body, is_move_safe):
+    enemy_head = body[0]
+    adjacent_cells = get_adjcent_cells_cor(my_head)
+    adjacent_cells_further = {
+    "further_up": get_adjcent_cells_cor({"x": my_head["x"], "y": my_head["y"] + 1}),
+    "further_down": get_adjcent_cells_cor({"x": my_head["x"], "y": my_head["y"] - 1}),
+    "further_right": get_adjcent_cells_cor({"x": my_head["x"] + 1, "y": my_head["y"]}),
+    "further_left": get_adjcent_cells_cor({"x": my_head["x"] - 1, "y": my_head["y"]})
+    }
     for body_part in body[:-1]:
-        if my_head["x"] + 1 == body_part["x"] and body_part["y"] == my_head["y"]:
-            is_move_safe["right"] = False
-        if my_head["x"] - 1 == body_part["x"] and body_part["y"] == my_head["y"]:
-            is_move_safe["left"] = False
-        if my_head["y"] + 1 == body_part["y"] and body_part["x"] == my_head["x"]:
-            is_move_safe["up"] = False
-        if my_head["y"] - 1 == body_part["y"] and body_part["x"] == my_head["x"]:
-            is_move_safe["down"] = False 
+       for move, cor in adjacent_cells.items():
+          if cor["x"] == body_part["x"] and body_part["y"] == cor["y"]:
+             is_move_safe[move] = False
 
-        
-    for body_part in body[:1]:
-        print(body_part)
-        if my_head["x"] + 1 == body_part["x"] - 1 and body_part["y"] == my_head["y"]:
-            is_move_safe["right"] = False ## if snake goes right and enemie can come left
-        if my_head["x"] + 1 == body_part["x"] and body_part["y"] - 1 == my_head["y"]:
-            is_move_safe["right"] = False ## if snake goes right and enemy can come down
-        if my_head["x"] + 1 == body_part["x"] and body_part["y"] + 1 == my_head["y"]:
-            is_move_safe["right"] = False ## if snake goes right and enemy can come up
+       
+
+    for direction, moves in adjacent_cells_further.items():
+      for move, cor in moves.items():
+          if enemy_head["x"] == my_head["x"] and enemy_head["y"] == my_head["y"]:
+            continue
+          if cor["x"] == enemy_head["x"] and cor["y"] == enemy_head["y"]:
+            is_move_safe[move] = False
         
         
-        if my_head["x"] - 1 == body_part["x"] + 1 and body_part["y"] == my_head["y"]:
-            is_move_safe["left"] = False ## if snake goes left and enemy can come right
-        if my_head["x"] - 1 == body_part["x"] and body_part["y"] - 1 == my_head["y"]:
-            is_move_safe["left"] = False ## if snake goes left and enemy can come down
-        if my_head["x"] - 1 == body_part["x"] and body_part["y"] + 1 == my_head["y"]:
-            is_move_safe["left"] = False ## if snake goes left and enemy can come up
+     
+
+
+      
+
+                        
+
+
         
-
-
-
-        if my_head["y"] + 1 == body_part["y"] - 1 and body_part["x"] == my_head["x"]:
-            is_move_safe["up"] = False ## if snake goes up and enemy can come down
-        if my_head["y"] + 1 == body_part["y"] and body_part["x"] + 1 == my_head["x"]:
-            is_move_safe["up"] = False ## if snake goes up and enemy can go right
-        if my_head["y"] + 1 == body_part["y"] and body_part["x"] - 1 == my_head["x"]:
-            is_move_safe["up"] = False ## if snake goes up and enemy can go left
-        
-        
-
-
-        if my_head["y"] - 1 == body_part["y"] + 1 and body_part["x"] == my_head["x"]:     
-            is_move_safe["down"] = False ## if snake goes down and enemy can go up
-        if my_head["y"] - 1 == body_part["y"] and body_part["x"] + 1 == my_head["x"]:
-            is_move_safe["down"] = False ## if snake goes down and enemy can go right
-        if my_head["y"] - 1 == body_part["y"] and body_part["x"] - 1 == my_head["x"]:     
-            is_move_safe["down"] = False  ## if snake goes down and enemy can go left
         
         
 def get_adjcent_cells_cor(my_head):
   adjacent_cells_cor = {}
-  adjacent_cells_cor ["up"] = get_up_cor(my_head)
-  adjacent_cells_cor ["down"] = get_down_cor(my_head)
-  adjacent_cells_cor ["right"] = get_right_cor(my_head)
-  adjacent_cells_cor ["left"] = get_left_cor(my_head)
+  adjacent_cells_cor["up"] = get_up_cor(my_head)
+  adjacent_cells_cor["down"] = get_down_cor(my_head)
+  adjacent_cells_cor["right"] = get_right_cor(my_head)
+  adjacent_cells_cor["left"] = get_left_cor(my_head)
   return adjacent_cells_cor
   
 
@@ -240,5 +220,3 @@ if __name__ == "__main__":
          "move": move, 
         "end": end
     })
-
-
