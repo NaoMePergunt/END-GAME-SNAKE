@@ -151,27 +151,21 @@ def check_collision(game_state, body, is_move_safe):
     my_head = game_state["you"]["body"][0]
     enemy_head = body[0]
     adjacent_cells = get_adjcent_cells_cor(my_head)
-    adjacent_cells_further = {
-    "further_up": get_adjcent_cells_cor({"x": my_head["x"], "y": my_head["y"] + 1}),
-    "further_down": get_adjcent_cells_cor({"x": my_head["x"], "y": my_head["y"] - 1}),
-    "further_right": get_adjcent_cells_cor({"x": my_head["x"] + 1, "y": my_head["y"]}),
-    "further_left": get_adjcent_cells_cor({"x": my_head["x"] - 1, "y": my_head["y"]})
-    }
     for body_part in body[:-1]:
        for move, cor in adjacent_cells.items():
           if cor["x"] == body_part["x"] and body_part["y"] == cor["y"]:
              is_move_safe[move] = False
 
-       
+    is_myself = my_head["x"] == enemy_head["x"] and enemy_head["y"] == my_head["y"]     
+    if is_myself:
+      return
 
-    for direction, moves in adjacent_cells_further.items():
-      for move, cor in moves.items():
-          if enemy_head["x"] == my_head["x"] and enemy_head["y"] == my_head["y"]:
-            continue
-          if cor["x"] == enemy_head["x"] and cor["y"] == enemy_head["y"] and len(my_body) <= len(body):
+    for move, depth_1 in adjacent_cells.items():
+      for depth_2 in get_adjcent_cells_cor(depth_1).values():
+          if depth_2["x"] == enemy_head["x"] and depth_2["y"] == enemy_head["y"] and len(my_body) <= len(body):
              is_move_safe[move] = False
 
-       
+
           
         
      
