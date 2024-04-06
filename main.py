@@ -15,7 +15,6 @@
 import random
 import typing
 
-
 # info is called when you create your Battlesnake on play.battlesnake.com
 # and controls your Battlesnake's appearance
 # TIP: If you open your Battlesnake URL in a browser you should see this data
@@ -41,10 +40,44 @@ def end(game_state: typing.Dict):
     print("GAME OVER\n")
 
 
-# move is called on every turn and returns your next move
-# Valid moves are "up", "down", "left", or "right"
-# See https://docs.battlesnake.com/api/example-move for available data
+class Snake:
+  def __init__(self, id, health, length, body, head):
+
+   self.id = id
+   self.body = body
+   self.health = health
+   self.length = length
+   self.head = head
+
+
+  def __str__(self):
+     return f"Snake:id={self.id}, health={self.health}, length={self.length}, body={self.body}, head={self.head})"
+
+  @classmethod
+  def get_snakes(cls, game_state):
+     snakes_info = game_state["board"]["snakes"]
+     snakes = [
+            cls(
+           id = snake_data["id"],
+           health = snake_data["health"],
+           body = snake_data["body"],
+           length = snake_data["length"],
+           head = snake_data["head"],
+     
+        )
+        for  snake_data in snakes_info
+     ]
+
+     return snakes
+  
+
+
+
 def move(game_state: typing.Dict) -> typing.Dict:
+    snakes = Snake.get_snakes(game_state)
+    print("snakes:")
+    for snake in snakes:
+       print(snake)
 
     is_move_safe = {
       "up": True, 
@@ -166,16 +199,6 @@ def check_collision(game_state, body, is_move_safe):
              is_move_safe[move] = False
 
 
-          
-        
-     
-
-
-      
-
-                        
-
-
         
         
         
@@ -214,3 +237,5 @@ if __name__ == "__main__":
          "move": move, 
         "end": end
     })
+
+
