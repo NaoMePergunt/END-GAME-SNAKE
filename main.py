@@ -76,7 +76,7 @@ def move(game_state: typing.Dict) -> typing.Dict:
     
     safe_moves = calculate_safe_moves(is_move_safe, adjacent_cells)
     
-    priority_moves, potential_kill = calculate_priority_moves(my_head_tuple, my_foods, pathing)
+    priority_moves, potential_kill = calculate_priority_moves(my_head_tuple, my_foods, pathing, potential_kill)
     next_move = choose_next_move(game_state, priority_moves, safe_moves, potential_collision)
 
     print(f"MOVE {game_state['turn']}: {next_move}")
@@ -91,14 +91,13 @@ def calculate_safe_moves(is_move_safe, adjacent_cells):
             safe_moves[move] = adjacent_cells[move]
     return safe_moves
     
-def calculate_priority_moves(my_head_tuple, my_foods, pathing):
+def calculate_priority_moves(my_head_tuple, my_foods, pathing, potential_kill):
     priority_moves = []
-    potential_kill = {}
     if len(potential_kill) > 0:
         priority_moves.extend(potential_kill.keys())
     elif len(my_foods) > 0:
         priority_moves.append(pathing.get_move_towards_target(my_head_tuple, my_foods[0]))
-    return priority_moves, potential_kill
+    return priority_moves
 
 
 def choose_next_move(game_state, priority_moves, safe_moves, potential_collision):
