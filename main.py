@@ -51,14 +51,14 @@ def move(game_state: typing.Dict) -> typing.Dict:
     pathing = Pathing.create(board, flood)
     cord_calc = CordCalc(board)
 
-    
-    adjacent_cells = cord_calc.get_adjacent_cells_dict(my_head_dict)
     players_foods = board.players_food
 
     my_snake = snakes[0]
     my_head_dict = my_snake.get_head()
     my_head_tuple = (snakes[0].get_head()["x"], snakes[0].get_head()["y"])
     my_foods = players_foods[0]
+
+    adjacent_cells = cord_calc.get_adjacent_cells_dict(my_head_dict)
 
     potential_collision = {}
     potential_kill = {}
@@ -76,7 +76,7 @@ def move(game_state: typing.Dict) -> typing.Dict:
     
     safe_moves = calculate_safe_moves(is_move_safe, adjacent_cells)
     
-    priority_moves, potential_kill = calculate_priority_moves(my_head_tuple, my_foods, pathing, potential_kill)
+    priority_moves = calculate_priority_moves(my_head_tuple, my_foods, pathing, potential_kill)
     next_move = choose_next_move(game_state, priority_moves, safe_moves, potential_collision)
 
     print(f"MOVE {game_state['turn']}: {next_move}")
