@@ -50,26 +50,26 @@ class Flood:
   def create_floodfill(self):
     self.visited = {}
     self.fills = [[[(snake.head["x"], snake.head["y"])]] for snake in self.snakes]
-    self.current_depth_cells = set()
+    current_depth_cells = set()
     has_new_cells = True
     while has_new_cells:
         has_new_cells = False
         
         for id, fill in enumerate(self.fills):
           if id == 0:
-             self.current_depth_cells.clear()
+             current_depth_cells.clear()
           previous_fill = fill[-1]
           new_fill = []
           for previous_cell in previous_fill:
               adjacent_cells = self.get_adjacent_cells_list(previous_cell)
               for cell in adjacent_cells:
                 if cell not in self.visited:
-                    self.current_depth_cells.add(cell)
+                    current_depth_cells.add(cell)
                     new_cell_found = self.process_new_cell(cell, id, new_fill)
                     has_new_cells = has_new_cells or new_cell_found
                 else:
                     other_id = self.visited[cell]
-                    if id != other_id and cell in self.current_depth_cells:
+                    if id != other_id and cell in current_depth_cells:
                       new_cell_found = self.process_contested_cell(cell, id, other_id, new_fill)
                       has_new_cells = has_new_cells or new_cell_found
 

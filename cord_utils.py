@@ -28,4 +28,6 @@ class CordCalc:
   def get_left_cor(self, coordinate):
      return {"x": coordinate["x"] - 1, "y": coordinate["y"]}
   
-    
+  def is_depth_within_bounds(self, depth):
+    x, y = depth["x"], depth["y"]
+    return 0 <= x < self.width and 0 <= y < self.height

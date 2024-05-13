@@ -62,6 +62,7 @@ def move(game_state: typing.Dict) -> typing.Dict:
 
     potential_collision = {}
     potential_kill = {}
+    dead_ends = {}
     
 
     board_display = board.board_display()
@@ -69,15 +70,16 @@ def move(game_state: typing.Dict) -> typing.Dict:
      print(row)
 
 
-    collision = Collision.create(board, is_move_safe, potential_collision, potential_kill)
+    collision = Collision.create(board, is_move_safe, potential_collision, potential_kill, dead_ends)
     collision.check_out_of_bounds()
     collision.check_collisions()
 
     
     safe_moves = calculate_safe_moves(is_move_safe, adjacent_cells)
+
     
     priority_moves = calculate_priority_moves(my_head_tuple, my_foods, pathing, potential_kill)
-    next_move = choose_next_move(game_state, priority_moves, safe_moves, potential_collision)
+    next_move = choose_next_move(game_state, priority_moves, safe_moves, potential_collision, dead_ends)
 
     print(f"MOVE {game_state['turn']}: {next_move}")
     return {"move": next_move}
@@ -100,7 +102,8 @@ def calculate_priority_moves(my_head_tuple, my_foods, pathing, potential_kill):
     return priority_moves
 
 
-def choose_next_move(game_state, priority_moves, safe_moves, potential_collision):
+def choose_next_move(game_state, priority_moves, safe_moves, potential_collision, dead_ends):
+    print(f"dead_ends: {dead_ends}")
     if len(priority_moves) > 0:
         return random.choice(priority_moves)
     elif len(safe_moves) > 0:
@@ -108,9 +111,10 @@ def choose_next_move(game_state, priority_moves, safe_moves, potential_collision
     elif len(potential_collision) > 0:
         print(f"MOVE {game_state['turn']}: Potential collision move detected! Moving unsafe!")
         return random.choice(list(potential_collision))
-    else:
-        print(f"MOVE {game_state['turn']}: No safe moves detected! Moving up!")
-        return {"move": "up"}
+    elif len(dead_ends) > 0:
+        print(f"MOVE {game_state['turn']}: No safe moves detected! Moving to dead end!")
+        return random.choice(list(dead_ends))
+  
   
 
 

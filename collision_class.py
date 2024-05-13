@@ -3,7 +3,7 @@ from cord_utils import CordCalc
 from functools import partial
 
 class Collision:
-   def __init__(self, board, is_move_safe, potential_collision, potential_kill):
+   def __init__(self, board, is_move_safe, potential_collision, potential_kill, dead_ends):
       self.snakes = board.snakes
       self.width = board.width
       self.height = board.height
@@ -13,14 +13,16 @@ class Collision:
       self.is_move_safe = is_move_safe
       self.potential_collision = potential_collision
       self.potential_kill = potential_kill
+      self.dead_ends = dead_ends
       self.cord_calc = CordCalc(board)
       self.get_adjacent_cells = partial(self.cord_calc.get_adjacent_cells_dict)
+      self.is_depth_within_bounds = partial(self.cord_calc.is_depth_within_bounds)
     
       
 
    @classmethod
-   def create(cls, board, is_move_safe, potential_collision, potential_kill):
-      return cls(board, is_move_safe, potential_collision, potential_kill)
+   def create(cls, board, is_move_safe, potential_collision, potential_kill, dead_ends):
+      return cls(board, is_move_safe, potential_collision, potential_kill, dead_ends)
    
   
    def body_collision(self, move, depth1):
@@ -41,13 +43,24 @@ class Collision:
             elif len(self.my_body) > len(enemy_body):
                if not self.occupied_snakes[y][x]:
                   self.potential_kill[move] = True
+          
    
 
    def check_collisions(self):
         for move, depth1 in self.get_adjacent_cells(self.my_head).items():
+          is_next_cell_dead_end = True
           self.body_collision(move, depth1)
           for depth2 in self.get_adjacent_cells(depth1).values():
              self.head_on_collision(move, depth1, depth2)
+             x2, y2 = depth2["x"], depth2["y"]
+             is_depth_2_occupied = self.occupied_snakes[y2][x2]
+             is_next_cell_dead_end = is_next_cell_dead_end and is_depth_2_occupied
+
+          if is_next_cell_dead_end:
+             self.is_move_safe[move] = False
+             self.dead_ends[move] = True
+             
+                
     
  
 
